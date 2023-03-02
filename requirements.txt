@@ -1,0 +1,12 @@
+pandas
+datasets
+openai
+transformers
+transformers[sentencepiece]
+torch==1.12.1+cu113 
+-f https://download.pytorch.org/whl/torch_stable.html
+inflect
+pickle5
+sentencepiece
+accelerate
+ipykernel
