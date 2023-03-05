@@ -76,25 +76,20 @@ def get_gpt_responses(batches, model, openai_key, temperature):
     prompt_and_response = []
     for batch in batches:
         for i, prompt in enumerate(batch):
-            try:
-                completion = openai.Completion.create(
-                    engine=model,
-                    prompt=prompt,
-                    max_tokens=1024,
-                    n=1,
-                    temperature=temperature,
-                )
-            except Exception as e:
-                print(e)
-                sleep(60)
-                completion = openai.Completion.create(
-                    engine=model,
-                    prompt=prompt,
-                    max_tokens=1024,
-                    n=1,
-                    temperature=temperature,
-                )
+            succeed = False
+            while not succeed:
+                try:
+                    completion = openai.Completion.create(
+                        engine=model,
+                        prompt=prompt,
+                        max_tokens=1024,
+                        n=1,
+                        temperature=temperature,
+                    )
+                    succeed = True
+                except Exception as e:
+                    print("GPT sleeping...")
+                    sleep(60)
             response = completion.choices[0].text.strip()
-            # print(response)
             prompt_and_response.append([prompt, response])
     return prompt_and_response

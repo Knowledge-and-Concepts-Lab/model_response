@@ -63,20 +63,27 @@ def main():
     
     # parse the arguments
     parser = argparse.ArgumentParser(description="""""")
-    parser.add_argument('--exp_name',
+    parser.add_argument('--exp_name', default = None,
                     type=str, help=""" The type of the experiment you are doing""")
-    parser.add_argument('--model',
+    parser.add_argument('--model', default = None,
                     type=str, help=""" Name of the feature listing file""")
-    parser.add_argument('--pretrained',
+    parser.add_argument('--pretrained', default = None,
                     type=str, help = """The dataset that the model is pretrained on""")
-    parser.add_argument('--input', type=str, 
+    parser.add_argument('--input', type=str, default = None,
                         help="""path to the input file""")
-    parser.add_argument('--output', type=str, 
+    parser.add_argument('--output', type=str, default = None,
                         help="""path to the output file""")
     parser.add_argument('--batch_size', type = int, default=256, 
                     help = """The batch size of data that is fed to the LLM""")
-
     args = parser.parse_args()
+    
+    # check if arguments was provided
+    assert args.exp_name is not None
+    assert args.model is not None
+    assert args.input is not None
+    assert args.output is not None
+    if args.model == "flan":
+        assert args.pretrained is not None
     
     # log the info to the log file
     os.makedirs("logs/", exist_ok=True)
