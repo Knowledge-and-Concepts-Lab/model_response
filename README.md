@@ -25,12 +25,6 @@ python -m pip install -r requirements.txt
 #### Example Run:
 
 ```sh
-sh main.sh
-```
-
-#### alternatively, 
-
-```sh
 python main.py --exp_name 'q_and_a' --model 'flan' --pretrained 'google/flan-t5-xl' --input './samples/q_and_a_sample_prompt.csv' --output './samples/q_and_a_sample_response.csv' --batch_size 256
 ```
 ### Changing parameters
@@ -41,9 +35,9 @@ python main.py --exp_name 'q_and_a' --model 'flan' --pretrained 'google/flan-t5-
 
     - triplet: Provdie concepts A, B, and C on each line. Let the LLM decide if concept A is closer to concept B or concept C.
 
-- `model`: there is only `flan` available for now
+- `model`: there is only `flan` and `gpt` available for now
 
-- `pretrained`: google/flan-t5-xl, google/flan-t5-xxl
+- `pretrained`: google/flan-t5-xl, google/flan-t5-xxl (this is specific to FLAN model)
 
 - `input`: The path to your input csv file
 
@@ -51,6 +45,12 @@ python main.py --exp_name 'q_and_a' --model 'flan' --pretrained 'google/flan-t5-
 
 - `batch_size`: The batch size of data that is fed to the LLM
 
+<br>
+
+## Setting up the API key 
+
+To use the gpt model, please create a file called "api_key.txt" under the main directory, and paste your openai API key in it. Please refer to this <a href = "https://www.educative.io/courses/open-ai-api-natural-language-processing-python/7DxorX8xA0O"> website </a> for more information. Note that depending on your subscription plan, your rate limit will be different and may take longer to get all your responses.  
+
 ## Prompt Engineering
 
-To play around with prompt engineering, check out `src/prompt_engineering.ipynb` .
+To play around with prompt engineering, check out `src/prompt_engineering.ipynb`.
