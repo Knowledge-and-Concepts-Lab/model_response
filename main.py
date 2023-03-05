@@ -38,9 +38,9 @@ def run_exp(exp_name,
     
     # get the batches accodring to the experiment type
     if exp_name == 'triplet':
-        batches = make_gpt_prompt_batches_triplet(prompts)
+        batches = make_prompt_batches_triplet(prompts)
     elif exp_name == 'q_and_a':
-        batches = make_gpt_prompt_batches_q_and_a(prompts)
+        batches = make_prompt_batches_q_and_a(prompts)
     else:
         logging.error('Undefined task. Only feature listing and triplet implemented')
     
@@ -50,6 +50,9 @@ def run_exp(exp_name,
     # get and save the responses
     if model == 'flan':
         responses = get_transformer_responses(batches, model, pretrained, exp_name,  batch_size)
+    elif model == 'gpt':
+        openai_key = Path(f"api_key").read_text()
+        responses = get_gpt_responses(batches, "text-davinci-003", openai_key, 0)
     else:
         logging.error('Only flan implemented now.')
     save_responses(responses, output_path)

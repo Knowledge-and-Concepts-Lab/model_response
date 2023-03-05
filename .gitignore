@@ -4,3 +4,4 @@ logs/
 models/
 *.log
 *.pyc
+api_key

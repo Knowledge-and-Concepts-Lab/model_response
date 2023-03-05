@@ -30,7 +30,7 @@ def generate_prompt_triplet(anchor, concept1, concept2):
     characters = len(prompt)
     return prompt, characters
 
-def make_gpt_prompt_batches_triplet(triplets):
+def make_prompt_batches_triplet(triplets):
     total_tokens = 0
     batches = []
     batch = []
@@ -39,11 +39,11 @@ def make_gpt_prompt_batches_triplet(triplets):
         prompt, characters = generate_prompt_triplet(anchor, concept1, concept2)
         tokens = np.ceil((characters + 1)/4)
         if total_tokens < 100000:
-            batch.append([anchor, concept1, concept2, prompt, tokens])
+            batch.append(prompt)
             total_tokens = tokens + (ESTIMATED_RESPONSE_TOKENS)
         else:
             batches.append(batch)
-            batch = [[anchor, concept1, concept2, prompt, tokens]]
+            batch = [prompt]
             total_tokens = tokens + (ESTIMATED_RESPONSE_TOKENS)
     if len(batch) != 0:
         batches.append(batch)
@@ -51,7 +51,7 @@ def make_gpt_prompt_batches_triplet(triplets):
     return batches
  
 # generating prompts for the general Q&A experiments
-def make_gpt_prompt_batches_q_and_a(prompts):
+def make_prompt_batches_q_and_a(prompts):
     total_tokens = 0
     batches = []
     batch = []
