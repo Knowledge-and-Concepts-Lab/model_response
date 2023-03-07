@@ -67,6 +67,30 @@ def make_prompt_batches_q_and_a(prompts):
             total_tokens = tokens + (ESTIMATED_RESPONSE_TOKENS) 
     if len(batch) != 0:
         batches.append(batch)
-    logging.info('Total batches of 150000 tokesn are {}'.format(len(batches)))
+    logging.info('Total batches of 100000 tokesn are {}'.format(len(batches)))
     return batches
- 
+
+# generating prompts for the "concept and feature" experiment
+def generate_prompt_feature(feature):
+    prompt = f'Generate an English prompt that check if "{feature}" is true for an object. Use [placeholder] to represent the object'
+    characters = len(prompt)
+    return prompt, characters
+
+def make_prompt_batches_feature(features):
+    total_tokens = 0
+    batches = []
+    batch = []
+    for feature in features:
+        prompt, characters = generate_prompt_feature(feature)
+        tokens = np.ceil((characters + 1)/4)
+        if total_tokens < 100000:
+            batch.append(prompt)
+            total_tokens = tokens + (ESTIMATED_RESPONSE_TOKENS)
+        else:
+            batches.append(batch)
+            batch = [prompt]
+            total_tokens = tokens + (ESTIMATED_RESPONSE_TOKENS)
+    if len(batch) != 0:
+        batches.append(batch)
+    logging.info('Total batches of 100000 tokesn are {}'.format(len(batches)))
+    return batches

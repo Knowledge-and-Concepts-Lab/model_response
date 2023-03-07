@@ -25,7 +25,7 @@ python -m pip install -r requirements.txt
 #### Example Run:
 
 ```sh
-python main.py --exp_name 'q_and_a' --model 'flan' --pretrained 'google/flan-t5-xl' --input './samples/q_and_a_sample_prompt.csv' --output './samples/q_and_a_sample_response.csv' --batch_size 256
+python main.py --exp_name 'q_and_a' --model_type 'gpt' --model_name 'text-davinci-003' --input './samples/q_and_a_sample_prompt.csv' --output './samples/q_and_a_sample_response.csv' --batch_size 256
 ```
 ### Changing parameters
 
@@ -35,9 +35,9 @@ python main.py --exp_name 'q_and_a' --model 'flan' --pretrained 'google/flan-t5-
 
     - triplet: Provdie concepts A, B, and C on each line. Let the LLM decide if concept A is closer to concept B or concept C.
 
-- `model`: there is only `flan` and `gpt` available for now
+- `model_type`: there is only `flan` and `gpt` available for now
 
-- `pretrained`: google/flan-t5-xl, google/flan-t5-xxl (this is specific to FLAN model)
+- `model_name`: google/flan-t5-xl, google/flan-t5-xxl for FLAN and text-davinci-002, text-davinci-003 for GPT
 
 - `input`: The path to your input csv file
 

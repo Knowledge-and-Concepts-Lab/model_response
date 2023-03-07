@@ -12,10 +12,6 @@ import numpy as np
 from src.model_interaction import *
 from src.prompt_generation import *
 
-DEFAULT_DIR = os.path.abspath(os.getcwd())
-DATASET_DIR = os.path.join(DEFAULT_DIR, "data/") 
-DEFAULT_RESULTS_DIR = os.path.join(DEFAULT_DIR, "results/")
-
 # the helper function for saving the responses
 def save_responses(reponses, file_path):
     with open(file_path, 'w') as f:
@@ -26,35 +22,40 @@ def save_responses(reponses, file_path):
     
 # the helper function for running the experiment
 def run_exp(exp_name,  
-            model,
-            pretrained, 
+            model_type,
+            model_name, 
             input_path,
             output_path, 
             batch_size, 
+            max_tokens = 256,
             openai_api_key = None 
             ):
     
-    prompts = np.loadtxt(input_path, delimiter=',', dtype = str)
     
     # get the batches accodring to the experiment type
     if exp_name == 'triplet':
-        batches = make_prompt_batches_triplet(prompts)
+        input_file = np.loadtxt(input_path, delimiter=',', dtype = str)
+        batches = make_prompt_batches_triplet(input_file)
     elif exp_name == 'q_and_a':
-        batches = make_prompt_batches_q_and_a(prompts)
+        input_file = np.loadtxt(input_path, delimiter=',', dtype = str)
+        batches = make_prompt_batches_q_and_a(input_file)
+    elif exp_name == 'feature_and_concept':
+        input_file = np.loadtxt(input_path, delimiter='\n', dtype = str)
+        batches = make_prompt_batches_feature(input_file)
     else:
         logging.error('Undefined task. Only feature listing and triplet implemented')
     
     # print out info about this run
-    print('Running experiment {} on data {} using {} model. Please wait for it to finish'.format(exp_name, input, model))
+    print('Running experiment {} on data {} using {} model. Please wait for it to finish'.format(exp_name, input_path, model_type))
     
     # get and save the responses
-    if model == 'flan':
-        responses = get_transformer_responses(batches, model, pretrained, exp_name,  batch_size)
-    elif model == 'gpt':
+    if model_type == 'flan':
+        responses = get_transformer_responses(batches, model_type, model_name, exp_name,  batch_size)
+    elif model_type == 'gpt':
         openai_key = Path(f"api_key").read_text()
-        responses = get_gpt_responses(batches, "text-davinci-003", openai_key, 0)
+        responses = get_gpt_responses(batches, model_name, openai_key, 0, max_tokens)
     else:
-        logging.error('Only flan implemented now.')
+        logging.error('Only flan and gpt implemented now.')
     save_responses(responses, output_path)
     return 
 
@@ -64,11 +65,11 @@ def main():
     # parse the arguments
     parser = argparse.ArgumentParser(description="""""")
     parser.add_argument('--exp_name', default = None,
-                    type=str, help=""" The type of the experiment you are doing""")
-    parser.add_argument('--model', default = None,
-                    type=str, help=""" Name of the feature listing file""")
-    parser.add_argument('--pretrained', default = None,
-                    type=str, help = """The dataset that the model is pretrained on""")
+                    type=str, help=""" the experiment type that you are doing""")
+    parser.add_argument('--model_type', default = None,
+                    type=str, help="""flan or gpt""")
+    parser.add_argument('--model_name', default = None,
+                    type=str, help = """ the specific model name you are using""")
     parser.add_argument('--input', type=str, default = None,
                         help="""path to the input file""")
     parser.add_argument('--output', type=str, default = None,
@@ -79,15 +80,15 @@ def main():
     
     # check if arguments was provided
     assert args.exp_name is not None
-    assert args.model is not None
+    assert args.model_type is not None
+    assert args.model_name is not None
     assert args.input is not None
     assert args.output is not None
-    if args.model == "flan":
-        assert args.pretrained is not None
+    
     
     # log the info to the log file
     os.makedirs("logs/", exist_ok=True)
-    logging.basicConfig(filename="logs/{}_{}.log".format(args.exp_name, args.model), level=logging.DEBUG, # encoding='utf-8',
+    logging.basicConfig(filename="logs/{}_{}.log".format(args.exp_name, args.model_type), level=logging.DEBUG, # encoding='utf-8',
                         format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
     logging.warning('is when this event was logged.')
     logging.info('Running experiments with the following parameters')
@@ -96,11 +97,12 @@ def main():
 
     # call the helper function to do the actual work
     run_exp(exp_name = args.exp_name,  
-            model = args.model, 
-            pretrained = args.pretrained,
+            model_type = args.model_type, 
+            model_name = args.model_name,
             input_path = args.input,
             output_path = args.output, 
             batch_size = args.batch_size,
+            max_tokens = 256,
             openai_api_key = None, 
            )
 
