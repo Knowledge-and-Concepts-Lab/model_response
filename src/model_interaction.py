@@ -91,7 +91,7 @@ def get_gpt_responses(batches, model_name, openai_key, temperature, max_tokens):
                     print("GPT sleeping...")
                     sleep(60)
             assert completion is not None
-            response = completion.choices[0].text.strip().strip(".")
+            response = completion.choices[0].text.strip().strip(".").strip("\n")
             prompt_and_response.append([prompt, response])
 
     start_time = time.time()

@@ -9,4 +9,4 @@
 
 # python main.py --exp_name 'triplet' --model_type 'gpt' --model_name 'text-davinci-003' --input './samples/triplet_sample_prompt.csv' --output './samples/triplet_sample_response.csv' --batch_size 256
 # python main.py --exp_name 'q_and_a' --model_type 'gpt' --model_name 'text-davinci-003' --input './samples/q_and_a_sample_prompt.csv' --output './samples/q_and_a_sample_response.csv' --batch_size 256
-python main.py --exp_name 'feature_and_concept' --model_type 'gpt' --model_name 'text-davinci-003' --input './samples/feature_and_concept_sample_prompt.csv' --output './samples/feature_and_concept_sample_response.csv' --batch_size 256
+python main.py --exp_name 'feature_and_concept' --model_type 'gpt' --model_name 'text-davinci-003' --input './samples/test_prompt.csv' --output './samples/test_response.csv' --batch_size 256

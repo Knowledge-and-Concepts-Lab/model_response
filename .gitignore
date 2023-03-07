@@ -5,3 +5,5 @@ models/
 *.log
 *.pyc
 api_key
+./samples/test_prompt.csv
+./samples/test_response.csv
