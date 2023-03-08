@@ -1,9 +1,9 @@
 *.egg-info
 */__pycache__/
-logs/
-models/
 *.log
 *.pyc
+test/
+logs/
+models/
 api_key
-./samples/test_prompt.csv
-./samples/test_response.csv
+

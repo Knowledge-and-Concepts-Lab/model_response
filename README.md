@@ -25,7 +25,7 @@ python -m pip install -r requirements.txt
 #### Example Run:
 
 ```sh
-python main.py --exp_name 'q_and_a' --model_type 'gpt' --model_name 'text-davinci-003' --input './samples/q_and_a_sample_prompt.csv' --output './samples/q_and_a_sample_response.csv' --batch_size 256
+python main.py --exp_name 'q_and_a' --model_type 'gpt' --model_name 'text-davinci-003' --input './examples/q_and_a/prompt.csv' --output './examples/q_and_a/response.csv' --batch_size 256
 ```
 ### Changing parameters
 

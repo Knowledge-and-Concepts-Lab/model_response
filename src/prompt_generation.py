@@ -72,7 +72,7 @@ def make_prompt_batches_q_and_a(prompts):
 
 # generating prompts for the "concept and feature" experiment
 def generate_prompt_feature(feature):
-    prompt = f'Generate an English prompt that check if [{feature}] is true for an object. Use [placeholder] to represent the object'
+    prompt = f'Generate an grammatically correct English prompt that checks if [{feature}] is true for an object. Use [placeholder] to represent the object.'
     characters = len(prompt)
     return prompt, characters
 
