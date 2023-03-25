@@ -36,7 +36,7 @@ def get_transformer_responses(batches, model_type, model_name, batch_size):
     accelerator = Accelerator()
     device = accelerator.device
     tokenizer = accelerator.prepare(
-        T5Tokenizer.from_pretrained()
+        T5Tokenizer.from_pretrained(model_name)
     )
     
     # prepare the dataset
@@ -61,7 +61,7 @@ def get_transformer_responses(batches, model_type, model_name, batch_size):
         preds.extend(outputs)
     
     responses = tokenizer.batch_decode(preds, skip_special_tokens=True)
-    del model
+    del flan_model
     # return the results
     for prompt, response in zip(batches, responses):
         prompt_and_response.append([prompt, response])

@@ -52,7 +52,7 @@ def run_exp(exp_name,
     
     # get and save the responses
     if model_type == 'flan':
-        responses = get_transformer_responses(batches, model_type, model_name, exp_name,  batch_size)
+        responses = get_transformer_responses(batches, model_type, model_name, batch_size)
     elif model_type == 'gpt':
         openai_key = Path(f"api_key").read_text()
         responses = get_gpt_responses(batches, model_name, openai_key, 0, max_tokens)
