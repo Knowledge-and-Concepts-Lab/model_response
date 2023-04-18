@@ -97,11 +97,11 @@ def main():
     args = parser.parse_args()
     
     # check if arguments was provided
-    assert args.exp_name != None
-    assert args.model_type != None
-    assert args.model_name != None
-    assert len(args.input) != 0
-    assert args.output != None
+    assert args.exp_name is not None
+    assert args.model_type is not None
+    assert args.model_name is not None
+    assert len(args.input) is not 0
+    assert args.output is not None
     
     
     # log the info to the log file
