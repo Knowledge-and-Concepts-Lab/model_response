@@ -13,4 +13,6 @@
 # python main.py --exp_name 'feature_and_concept' --model_type 'gpt' --model_name 'text-davinci-003' --input './examples/feature_and_concept/features.csv' './examples/feature_and_concept/animals.csv' --output './examples/feature_and_concept/response.csv' --batch_size 1
 
 # pairwise experiments
-python main.py --exp_name 'pairwise' --model_type 'gpt' --model_name 'text-davinci-003' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/response_davinci-003.csv' --batch_size 256
+# python main.py --exp_name 'pairwise' --model_type 'gpt' --model_name 'text-davinci-003' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/response_davinci-003.csv' --batch_size 256
+python main.py --exp_name 'pairwise' --model_type 'flan' --model_name 'google/flan-t5-xl' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/response_flan-t5-xl.csv' --batch_size 256
+python main.py --exp_name 'pairwise' --model_type 'flan' --model_name 'google/flan-t5-xxl' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/response_flan-t5-xxl.csv' --batch_size 256
