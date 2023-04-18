@@ -44,6 +44,10 @@ def run_exp(exp_name,
         assert len(input_path) == 2, "Feature and Concept Experiment should have two input files"
         feature_file = np.loadtxt(input_path[0], delimiter='\n', dtype = str)
         batches = make_prompt_batches_feature(feature_file)
+    elif exp_name == 'pairwise':
+        assert len(input_path) == 1, "Pairwise Experiment should only have input files"
+        feature_file = np.loadtxt(input_path[0], delimiter=',', dtype = str)
+        batches = make_prompt_batches_pairwise(exp_name, feature_file)
     else:
         logging.error('Undefined task. Only feature listing and triplet implemented')
     

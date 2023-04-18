@@ -94,3 +94,41 @@ def make_prompt_batches_feature(features):
         batches.append(batch)
     logging.info('Total batches of 100000 tokesn are {}'.format(len(batches)))
     return batches
+
+# generating prompts for pairwise experiments
+def generate_prompt(exp, input):
+    if exp == 'pairwise':
+        a, b = input
+        prompt = f'Answer with only one number from 1 to 7: How similar is {a} and {b}, considering 1 as the least similar and 7 as the most similar?'
+    elif exp == 'triplet':
+        anchor, concept1, concept2 = input
+        prompt = f'Answer using only only word - {concept1} or {concept2} and not {anchor}. Which is more similar in meaning to {anchor}?'
+    elif exp == 'q_and_a':
+        pass
+    elif exp == 'feature':
+        prompt = f'Generate an grammatically correct English prompt that checks if [{input}] is true for an object. Use [placeholder] to represent the object.'
+    else:
+        prompt = f'some error'
+    
+    characters = len(prompt)
+
+    return prompt, characters
+
+def make_prompt_batches_pairwise(exp, inputs):
+    total_tokens = 0
+    batches = []
+    batch = []
+    for input in inputs:
+        prompt, characters = generate_prompt(exp, input)
+        tokens = np.ceil((characters + 1)/4)
+        if total_tokens < 100000:
+            batch.append(prompt)
+            total_tokens = tokens + (ESTIMATED_RESPONSE_TOKENS)
+        else:
+            batches.append(batch)
+            batch = [prompt]
+            total_tokens = tokens + (ESTIMATED_RESPONSE_TOKENS)
+    if len(batch) != 0:
+        batches.append(batch)
+    logging.info('Total batches of 100000 tokesn are {}'.format(len(batches)))
+    return batches
