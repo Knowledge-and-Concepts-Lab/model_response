@@ -35,7 +35,7 @@ def run_exp(exp_name,
     if exp_name == 'triplet':
         assert len(input_path) == 1, "Triplet Experiment should only have one input file"
         input_file = np.loadtxt(input_path[0], delimiter=',', dtype = str)
-        batches = make_prompt_batches_triplet(input_file)
+        batches = make_prompt_batches(exp_name, input_file)
     elif exp_name == 'q_and_a':
         assert len(input_path) == 1, "Q&A Experiment should only have one input file"
         input_file = np.loadtxt(input_path[0], delimiter=',', dtype = str)
@@ -43,11 +43,11 @@ def run_exp(exp_name,
     elif exp_name == 'feature_and_concept':
         assert len(input_path) == 2, "Feature and Concept Experiment should have two input files"
         feature_file = np.loadtxt(input_path[0], delimiter='\n', dtype = str)
-        batches = make_prompt_batches_feature(feature_file)
+        batches = make_prompt_batches(exp_name, feature_file)
     elif exp_name == 'pairwise':
         assert len(input_path) == 1, "Pairwise Experiment should only have input files"
-        feature_file = np.loadtxt(input_path[0], delimiter=',', dtype = str)
-        batches = make_prompt_batches_pairwise(exp_name, feature_file)
+        input_file = np.loadtxt(input_path[0], delimiter=',', dtype = str)
+        batches = make_prompt_batches(exp_name, input_file)
     else:
         logging.error('Undefined task. Only feature listing and triplet implemented')
     

@@ -14,5 +14,10 @@
 
 # pairwise experiments
 # python main.py --exp_name 'pairwise' --model_type 'gpt' --model_name 'text-davinci-003' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/response_davinci-003.csv' --batch_size 256
-python main.py --exp_name 'pairwise' --model_type 'flan' --model_name 'google/flan-t5-xl' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/response_flan-t5-xl.csv' --batch_size 256
+# python main.py --exp_name 'pairwise' --model_type 'flan' --model_name 'google/flan-t5-xl' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/response_flan-t5-xl.csv' --batch_size 256
 # python main.py --exp_name 'pairwise' --model_type 'flan' --model_name 'google/flan-t5-xxl' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/response_flan-t5-xxl.csv' --batch_size 256
+
+# test small group of data
+
+# python main.py --exp_name 'pairwise' --model_type 'flan' --model_name 'google/flan-t5-xl' --input './examples/pairwise/prompt_small.csv' --output './examples/pairwise/response_flan-t5-xl.csv' --batch_size 1
+# python main.py --exp_name 'triplet' --model_type 'flan' --model_name 'google/flan-t5-xl' --input './examples/triplet/prompt_small.csv' --output './examples/triplet/response_flan-t5-xl-small.csv' --batch_size 1

@@ -57,6 +57,8 @@ def get_transformer_responses(batches, model_type, model_name, batch_size):
     for batch in dataloader:
         input_ids = batch['input_ids'].to(device)
         attention_mask = batch['attention_mask'].to(device)
+        # print(f"input: {input_ids}")
+        # print(f"attention_mask: {attention_mask}")
         outputs = flan_model.generate(input_ids, attention_mask=attention_mask, renormalize_logits = True)
         preds.extend(outputs)
     
