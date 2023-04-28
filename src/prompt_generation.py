@@ -29,8 +29,8 @@ def generate_prompt(exp, input):
     
     if exp == 'pairwise':
         a, b = input
-        prompt = f"Answer with only one number from 1 to 5, considering 1 as 'very dissimilar', 2 as 'likely dissimilar', 3 as 'neutral', 4 as 'likely similar', and 5 as 'very similar': How similar is {a} and {b}?"
-        # prompt = f'Answer with only one number from 1 to 7: How similar is {a} and {b}, considering 1 as the least similar and 7 as the most similar?'
+        # prompt = f"Answer with only one number from 1 to 5, considering 1 as 'very dissimilar', 2 as 'likely dissimilar', 3 as 'neutral', 4 as 'likely similar', and 5 as 'very similar': How similar is {a} and {b}?"
+        prompt = f'Answer with only one number from 1 to 7: How similar is {a} and {b}, considering 1 as the least similar and 7 as the most similar?'
     elif exp == 'triplet':
         anchor, concept1, concept2 = input
         prompt = f'Answer using only only word - {concept1} or {concept2} and not {anchor}. Which is more similar in meaning to {anchor}?'

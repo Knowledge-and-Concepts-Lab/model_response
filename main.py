@@ -12,24 +12,25 @@ import numpy as np
 from src.model_interaction import *
 from src.prompt_generation import *
 
-# the helper function for saving the responses
 def save_responses(reponses, file_path):
+    """the helper function for saving the responses"""
+    
     with open(file_path, 'w') as f:
         # using csv.writer method from CSV package
         write = csv.writer(f)
-        write = csv.writer(f)
         write.writerows(reponses)
     
-# the helper function for running the experiment
 def run_exp(exp_name,  
             model_type,
             model_name, 
             input_path,
             output_path, 
             batch_size, 
-            max_tokens = 256,
-            openai_api_key = None 
+            max_tokens=256,
+            openai_api_key=None,
+            temprature=0
             ):
+    """the helper function for running the experiment"""
     
     # get the batches accodring to the experiment type
     if exp_name == 'triplet':
@@ -59,7 +60,7 @@ def run_exp(exp_name,
         responses = get_transformer_responses(batches, model_type, model_name, batch_size)
     elif model_type == 'gpt':
         openai_key = Path(f"api_key").read_text()
-        responses = get_gpt_responses(batches, model_name, openai_key, 0, max_tokens)
+        responses = get_gpt_responses(batches, model_name, openai_key, temprature, max_tokens)
     else:
         logging.error('Only flan and gpt implemented now.')
     
@@ -77,23 +78,39 @@ def run_exp(exp_name,
         save_responses(responses, output_path)
     return 
 
-# the main method, handling command line arguments
 def main():
+    """the main method, handling command line arguments"""
     
     # parse the arguments
     parser = argparse.ArgumentParser(description="""""")
-    parser.add_argument('--exp_name', default = None,
-                    type=str, help=""" the experiment type that you are doing""")
-    parser.add_argument('--model_type', default = None,
-                    type=str, help="""flan or gpt""")
-    parser.add_argument('--model_name', default = None,
-                    type=str, help = """ the specific model name you are using""")
-    parser.add_argument('--input', default=[], nargs='*',
+    parser.add_argument('--exp_name', 
+                        default=None,
+                        type=str, 
+                        help="""the experiment type that you are doing""")
+    parser.add_argument('--model_type', 
+                        default=None,
+                        type=str, 
+                        help="""flan or gpt""")
+    parser.add_argument('--model_name', 
+                        default=None,
+                        type=str, 
+                        help = """the specific model name you are using""")
+    parser.add_argument('--input', 
+                        default=[], 
+                        nargs='*',
                         help="""path to the input file""")
-    parser.add_argument('--output', type=str, default = None,
+    parser.add_argument('--output', 
+                        type=str, 
+                        default=None,
                         help="""path to the output file""")
-    parser.add_argument('--batch_size', type = int, default=256, 
-                    help = """The batch size of data that is fed to the LLM""")
+    parser.add_argument('--batch_size', 
+                        type=int, 
+                        default=256, 
+                        help="""The batch size of data that is fed to the LLM""")
+    parser.add_argument('--temprature', 
+                        type=float, 
+                        default=0, 
+                        help="""Temprature for LLMs""")
     args = parser.parse_args()
     
     # check if arguments was provided
@@ -121,6 +138,7 @@ def main():
             batch_size = args.batch_size,
             max_tokens = 256,
             openai_api_key = None, 
+            temprature = args.temprature,
            )        
 
 if __name__=="__main__":

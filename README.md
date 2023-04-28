@@ -4,6 +4,8 @@ This repository contains the code to get responses from Large language models on
 
 ## Requirements
 
+### Conda Environment Setup
+
 To install conda on your remote Linux server, use the following commands:
 
 ```sh
@@ -18,6 +20,15 @@ To set up the environment with conda, use the following commands:
 conda create --name get_responses -c conda-forge python=3.7 pattern
 conda activate get_responses
 python -m pip install -r requirements.txt
+```
+
+### LLaMA Setup
+
+To install LLaMA, please clone from this [repo](https://github.com/facebookresearch/llama), then follow these commands:
+
+```sh
+cd llama
+pip install -e .
 ```
 
 ## Run the scripts
