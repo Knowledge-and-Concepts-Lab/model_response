@@ -30,10 +30,13 @@ def generate_prompt(exp, input):
     if exp == 'pairwise':
         a, b = input
         # prompt = f"Answer with only one number from 1 to 5, considering 1 as 'very dissimilar', 2 as 'likely dissimilar', 3 as 'neutral', 4 as 'likely similar', and 5 as 'very similar': How similar is {a} and {b}?"
-        prompt = f'Answer with only one number from 1 to 7: How similar is {a} and {b}, considering 1 as the least similar and 7 as the most similar?'
+        # prompt = f'Answer with only one number from 1 to 7: How similar is {a} and {b}, considering 1 as the least similar and 7 as the most similar?'
+        prompt = f"Answer with only one number from 1 to 7, considering 1 as 'extremely dissimilar', 2 as 'very dissimilar', 3 as 'likely dissimilar', 4 as 'neutral', 5 as 'likely similar', 6 as 'very similar', and 7 as 'extremely similar': How similar is {a} and {b}?"
     elif exp == 'triplet':
         anchor, concept1, concept2 = input
-        prompt = f'Answer using only only word - {concept1} or {concept2} and not {anchor}. Which is more similar in meaning to {anchor}?'
+        # prompt = f'Answer using only only word - {concept1} or {concept2} and not {anchor}. Which is more similar in meaning to {anchor}?'
+        # flipped
+        prompt = f'Answer using only only word - {concept2} or {concept1} and not {anchor}. Which is more similar in meaning to {anchor}?'
     elif exp == 'feature':
         prompt = f'Generate an grammatically correct English prompt that checks if [{input}] is true for an object. Use [placeholder] to represent the object.'
     elif exp == 'q_and_a':
