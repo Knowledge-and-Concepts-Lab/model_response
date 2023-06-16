@@ -35,5 +35,11 @@
 # done
 
 # GPT-3 expriments
-python main.py --exp_name 'pairwise' --model_type 'gpt' --model_name 'text-davinci-002' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/response_davinci-002.csv' --batch_size 256
-python main.py --exp_name 'triplet' --model_type 'gpt' --model_name 'text-davinci-002' --input './examples/triplet/prompt.csv' --output './examples/triplet/response_flipped_davinci-002.csv' --batch_size 256
+# python main.py --exp_name 'pairwise' --model_type 'gpt' --model_name 'text-davinci-002' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/response_davinci-002.csv' --batch_size 256
+# python main.py --exp_name 'triplet' --model_type 'gpt' --model_name 'text-davinci-002' --input './examples/triplet/prompt.csv' --output './examples/triplet/response_temp_default_flipped_davinci-002.csv' --batch_size 256
+
+# Round Things
+python main.py --exp_name 'triplet' --model_type 'gpt' --model_name 'text-davinci-002' \
+    --input './examples/triplet/roundthings/prompt_roundthings.csv' \
+    --output './examples/triplet/roundthings/res_rt_temp_default_davinci-002.csv' --batch_size 256
+

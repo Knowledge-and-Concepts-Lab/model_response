@@ -73,7 +73,6 @@ def get_transformer_responses(batches, model_type, model_name, batch_size):
     
     
 def get_gpt_responses(batches, model_name, openai_key, temperature, max_tokens):
-    
     # helper function to send a whole to chatgpt
     def send_prompt(batch, prompt_and_response, max_tokens):
         for prompt in batch:
@@ -86,7 +85,7 @@ def get_gpt_responses(batches, model_name, openai_key, temperature, max_tokens):
                         prompt = prompt,
                         max_tokens = max_tokens,
                         n = 1,
-                        temperature = temperature,
+                        # temperature = temperature,
                     )
                     succeed = True
                 except Exception as e:
