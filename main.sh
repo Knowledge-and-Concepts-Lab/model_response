@@ -39,7 +39,29 @@
 # python main.py --exp_name 'triplet' --model_type 'gpt' --model_name 'text-davinci-002' --input './examples/triplet/prompt.csv' --output './examples/triplet/response_temp_default_flipped_davinci-002.csv' --batch_size 256
 
 # Round Things
-python main.py --exp_name 'triplet' --model_type 'gpt' --model_name 'text-davinci-002' \
-    --input './examples/triplet/roundthings/prompt_roundthings.csv' \
-    --output './examples/triplet/roundthings/res_rt_temp_default_davinci-002.csv' --batch_size 256
+# python main.py --exp_name 'triplet' --model_type 'gpt' --model_name 'text-davinci-002' \
+#     --input './examples/triplet/roundthings/prompt_roundthings.csv' \
+#     --output './examples/triplet/roundthings/res_rt_temp_default_davinci-002.csv' --batch_size 256
 
+# Flan XXL
+# python main.py --exp_name 'pairwise' --model_type 'flan' --model_name 'google/flan-t5-xxl' --input './examples/pairwise/prompt.csv' --output './examples/pairwise/flan-t5-xxl_pairwise.csv' --batch_size 256
+# python main.py --exp_name 'triplet' --model_type 'flan' --model_name 'google/flan-t5-xxl' --input './examples/triplet/prompt.csv' --output './examples/triplet/flan-t5-xxl_triplet.csv' --batch_size 256
+
+# Llama and Alpaca
+# python main.py --exp_name 'pairwise' --model_type 'alpaca' --model_name '7b' --input './examples/pairwise/prompt.csv' --output './examples/supplementary/alpaca_pairwise.csv' --batch_size 256
+# python main.py --exp_name 'triplet' --model_type 'alpaca' --model_name '7b' --input './examples/triplet/prompt.csv' --output './examples/supplementary/alpaca_triplet.csv' --batch_size 256
+
+# python main.py --exp_name 'pairwise' --model_type 'llama' --model_name '7b' --input './examples/pairwise/prompt.csv' --output './examples/supplementary/llama_pairwise.csv' --batch_size 256
+# python main.py --exp_name 'triplet' --model_type 'llama' --model_name '7b' --input './examples/triplet/prompt.csv' --output './examples/supplementary/llama_triplet.csv' --batch_size 256
+
+# Flan ul2
+# python main.py --exp_name 'pairwise' --model_type 'flan-ul2' --model_name 'google/flan-ul2' --input './examples/pairwise/prompt.csv' --output './examples/supplementary/flan-ul2_pairwise.csv' --batch_size 256
+# python main.py --exp_name 'triplet' --model_type 'flan-ul2' --model_name 'google/flan-ul2' --input './examples/triplet/prompt.csv' --output './examples/supplementary/flan-ul2_triplet.csv' --batch_size 256
+
+# falcon-7b
+python main.py --exp_name 'pairwise' --model_type 'falcon-7b' --model_name "tiiuae/falcon-7b" \
+    --input './examples/pairwise/prompt_small.csv' \
+    --output './examples/supplementary/falcon-7b_pairwise_small.csv' --batch_size 256
+python main.py --exp_name 'triplet' --model_type 'falcon-7b' --model_name "tiiuae/falcon-7b" \
+    --input './examples/triplet/prompt_small.csv' \
+    --output './examples/supplementary/falcon-7b_triplet_small.csv' --batch_size 256

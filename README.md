@@ -17,18 +17,15 @@ sh Miniconda3-latest-Linux-x86_64.sh
 To set up the environment with conda, use the following commands:
 
 ```sh
-conda create --name get_responses -c conda-forge python=3.7 pattern
+conda create --name get_responses -c conda-forge python=3.8 pattern
 conda activate get_responses
 python -m pip install -r requirements.txt
 ```
 
-### LLaMA Setup
+### Torch 2.0 is Required to use [Falcon-7B](https://huggingface.co/tiiuae/falcon-7b)/40B
 
-To install LLaMA, please clone from this [repo](https://github.com/facebookresearch/llama), then follow these commands:
-
-```sh
-cd llama
-pip install -e .
+```
+pip install numpy --pre torch torchvision torchaudio --force-reinstall --index-url https://download.pytorch.org/whl/nightly/cu117                                         
 ```
 
 ## Run the scripts
@@ -54,7 +51,7 @@ If you want to run a bigger model like 'google/flan-t5-xxl', and if you want to 
 
     - feature_and_concept: Provide two csv files. One with features on each line and one with concepts on each line. Let the LLM generate a prompt for each (feature, concept) pair.
 
-- `model_type`: there is only `flan` and `gpt` available for now
+- `model_type`: `flan`, `gpt`, `llama`, `alpaca`, `flan-ul2`, `falcon` are available
 
 - `model_name`: google/flan-t5-xl, google/flan-t5-xxl, etc for FLAN and text-davinci-002, text-davinci-003, etc for GPT
 
@@ -72,4 +69,4 @@ To use the gpt model, please create a file called "api_key.txt" under the main d
 
 ## Prompt Engineering
 
-To play around with prompt engineering, check out `src/prompt_engineering.ipynb`.
+To play around with prompt engineering, check out `notebook/test_prompt_xxx.ipynb`.

@@ -37,7 +37,8 @@ def generate_prompt(exp, input):
         anchor, concept1, concept2 = input
         if flipped:
             concept1, concept2 = concept2, concept1
-        prompt = f'Answer using only only word - {concept1} or {concept2} and not {anchor}. Which is more similar in meaning to {anchor}?'
+        prompt = f'Answer using only one word - {concept1} or {concept2} and not {anchor}. Which is more similar in meaning to {anchor}?'
+        # prompt = f'Answer using only one word - {concept1} or {concept2} and not {anchor}, which is more similar to {anchor} in terms of size?'
     elif exp == 'feature':
         prompt = f'Generate an grammatically correct English prompt that checks if [{input}] is true for an object. Use [placeholder] to represent the object.'
     elif exp == 'q_and_a':

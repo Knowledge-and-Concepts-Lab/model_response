@@ -23,6 +23,56 @@ import inflect
 from pathlib import Path
 from time import sleep
 import pickle5 as pickle
+import transformers
+
+def get_responses(batches, model_type):
+    batches = batches[0]
+
+    start_time = time.time()
+    transformers.logging.set_verbosity_error()
+
+    accelerator = Accelerator()
+    device = accelerator.device
+    
+    if model_type == "llama-7b":
+        model = transformers.LlamaForCausalLM.from_pretrained("/mnt/disk-1/llama_hf_7B")
+        tokenizer = transformers.LlamaTokenizer.from_pretrained("/mnt/disk-1/llama_hf_7B")
+    elif model_type == "alpaca-7b":
+        model = transformers.AutoModelForCausalLM.from_pretrained("/mnt/disk-1/alpaca-7b")
+        tokenizer = transformers.AutoTokenizer.from_pretrained("/mnt/disk-1/alpaca-7b")
+    elif model_type == "flan-ul2":
+        model = transformers.T5ForConditionalGeneration.from_pretrained("google/flan-ul2", torch_dtype=torch.bfloat16, cache_dir="/mnt/disk-1/flan-ul2")         
+        tokenizer = transformers.AutoTokenizer.from_pretrained("google/flan-ul2")
+    elif model_type == "flan-xxl":
+        model = transformers.T5ForConditionalGeneration.from_pretrained("google/flan-xxl", torch_dtype=torch.bfloat16, cache_dir="/mnt/disk-1/flan-xxl")         
+        tokenizer = transformers.AutoTokenizer.from_pretrained("google/flan-xxl")
+    elif model_type == "falcon-7b":
+        model = transformers.AutoModelForCausalLM.from_pretrained("tiiuae/falcon-7b", torch_dtype=torch.bfloat16, cache_dir="/mnt/disk-1/falcon-7b", trust_remote_code=True)
+        tokenizer = transformers.AutoTokenizer.from_pretrained("tiiuae/falcon-7b")  
+        
+    model, tokenizer = accelerator.prepare(model, tokenizer)
+    
+    if model_type == "llama-7b" or model_type == "alpaca-7b" or model_type == "falcon-7b":
+        # pipeline for text generate
+        pipe = pipeline('text-generation', model=model, tokenizer=tokenizer, device=device)
+        # handle responses
+        responses = pipe(batches, max_new_tokens=20, do_sample=False)
+        responses = [r[0]['generated_text'] for r in responses]
+        responses = [','.join(r.split('\n')[1::]) for r in responses]
+    elif model_type == "flan-ul2" or model_type == "flan-xxl":
+        # prepare and tokenize inputs
+        max_length = max([len(prompt.split()) for prompt in batches])
+        inputs = tokenizer(batches, return_tensors="pt", padding=True, truncation=True, max_length=max_length)
+        inputs = {k: v.to(device) for k, v in inputs.items()}
+        # generate response
+        outputs = model.generate(**inputs, max_length=max_length, do_sample=False)
+        # decode outputs
+        responses = [tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
+
+    prompt_and_response = list(zip(batches, responses))
+ 
+    print('Time taken to generate responses is {}s'.format(time.time()-start_time))
+    return prompt_and_response
 
 # interactions with transformer
 def get_transformer_responses(batches, model_type, model_name, batch_size):
