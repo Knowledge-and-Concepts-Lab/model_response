@@ -24,7 +24,7 @@ import inflect
 ERROR = 3
 ESTIMATED_RESPONSE_TOKENS = 8 + ERROR
 
-def generate_prompt(exp, input):
+def generate_prompt(exp, input, CoT):
     """General function generating prompts for different experiments"""
     
     if exp == 'pairwise':
@@ -37,23 +37,26 @@ def generate_prompt(exp, input):
         anchor, concept1, concept2 = input
         if flipped:
             concept1, concept2 = concept2, concept1
-        prompt = f'Answer using only one word - {concept1} or {concept2} and not {anchor}. Which is more similar in meaning to {anchor}?'
+        prompt = f"Answer using only one word - {concept1} or {concept2} and not {anchor}. Which is more similar in meaning to {anchor}?"
         # prompt = f'Answer using only one word - {concept1} or {concept2} and not {anchor}, which is more similar to {anchor} in terms of size?'
     elif exp == 'feature':
         prompt = f'Generate an grammatically correct English prompt that checks if [{input}] is true for an object. Use [placeholder] to represent the object.'
     elif exp == 'q_and_a':
         pass
     
+    if CoT == True:
+        prompt = prompt + " Let's think step by step."
+    
     characters = len(prompt)
 
     return prompt, characters
 
-def make_prompt_batches(exp, inputs):
+def make_prompt_batches(exp, inputs, CoT):
     total_tokens = 0
     batches = []
     batch = []
     for input in inputs:
-        prompt, characters = generate_prompt(exp, input)
+        prompt, characters = generate_prompt(exp, input, CoT)
         tokens = np.ceil((characters + 1)/4)
         if total_tokens < 100000:
             batch.append(prompt)

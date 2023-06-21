@@ -25,18 +25,19 @@ def run_exp(exp_name,
             model_name, 
             input_path,
             output_path, 
-            batch_size, 
+            batch_size=256, 
             max_tokens=256,
             openai_api_key=None,
-            temprature=0
+            temprature=0,
+            CoT=False
             ):
     """the helper function for running the experiment"""
     
     # get the batches accodring to the experiment type
-    if exp_name == 'triplet':
-        assert len(input_path) == 1, "Triplet Experiment should only have one input file"
+    if exp_name == 'triplet' or exp_name == 'pairwise':
+        assert len(input_path) == 1, "Triplet or Pairwise Experiment should only have one input file"
         input_file = np.loadtxt(input_path[0], delimiter=',', dtype = str)
-        batches = make_prompt_batches(exp_name, input_file)
+        batches = make_prompt_batches(exp_name, input_file, CoT)
     elif exp_name == 'q_and_a':
         assert len(input_path) == 1, "Q&A Experiment should only have one input file"
         input_file = np.loadtxt(input_path[0], delimiter=',', dtype = str)
@@ -44,28 +45,26 @@ def run_exp(exp_name,
     elif exp_name == 'feature_and_concept':
         assert len(input_path) == 2, "Feature and Concept Experiment should have two input files"
         feature_file = np.loadtxt(input_path[0], delimiter='\n', dtype = str)
-        batches = make_prompt_batches(exp_name, feature_file)
-    elif exp_name == 'pairwise':
-        assert len(input_path) == 1, "Pairwise Experiment should only have input files"
-        input_file = np.loadtxt(input_path[0], delimiter=',', dtype = str)
-        batches = make_prompt_batches(exp_name, input_file)
+        batches = make_prompt_batches(exp_name, feature_file, CoT)
     else:
         logging.error('Undefined task. Only feature listing and triplet implemented')
     
     # print out info about this run
     print('Running experiment {} on data {} using {} model. Please wait for it to finish'.format(exp_name, input_path, model_type))
     
+    model_list = ['flan-t5-xl', 'flan-t5-xxl', 'flan-ul2', 'llama-7b', 'alpaca-7b', 'falcon-7b']
     responses = []
     # get and save the responses
-    if model_type == 'flan':
-        responses = get_transformer_responses(batches, model_type, model_name, batch_size)
-    elif model_type == 'gpt':
+    # if model_type == : # or model_type == 'flan-t5-xxl':
+    #     responses = get_transformer_responses(batches, model_type, model_name, batch_size)
+    if model_type == 'gpt':
         openai_key = Path(f"api_key").read_text()
         responses = get_gpt_responses(batches, model_name, openai_key, temprature, max_tokens)
-    elif model_type == 'llama-7b' or model_type == 'alpaca-7b' or model_type == 'flan-ul2' or model_type == "falcon-7b":
+    elif model_type in model_list:
         responses = get_responses(batches, model_type)
     else:
-        logging.error('Only flan, flan-ul2, gpt, llama, alpaca are implemented now.')
+        print("Please select from following models: 'flan-t5-xxl, flan-t5-xl, flan-ul2, llama-7b, alpaca-7b, falcon-7b, and gpt families")
+        exit()
     
     
     # pipeline specific for the Feature and Concept experiment
@@ -93,7 +92,7 @@ def main():
     parser.add_argument('--model_type', 
                         default=None,
                         type=str, 
-                        help="""flan, flan-ul2, gpt, llama, alpaca, falcon, """)
+                        help="""Please select from following models: 'flan-t5-xxl, flan-t5-xl, flan-ul2, llama-7b, alpaca-7b, falcon-7b, and gpt families""")
     parser.add_argument('--model_name', 
                         default=None,
                         type=str, 
@@ -114,12 +113,16 @@ def main():
                         type=float, 
                         default=0, 
                         help="""Temprature for LLMs""")
+    parser.add_argument('--cot', 
+                        type=bool, 
+                        default=False, 
+                        help="""Running Chain of Thought for your experiment""")
     args = parser.parse_args()
     
     # check if arguments was provided
     assert args.exp_name != None
     assert args.model_type != None
-    assert args.model_name != None
+    if args.model_type == 'gpt': assert args.model_name != None
     assert len(args.input) != 0
     assert args.output != None
     
@@ -142,6 +145,7 @@ def main():
             max_tokens = 256,
             openai_api_key = None, 
             temprature = args.temprature,
+            CoT = args.cot,
            )        
 
 if __name__=="__main__":

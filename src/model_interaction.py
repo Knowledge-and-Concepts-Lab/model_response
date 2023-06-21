@@ -30,6 +30,8 @@ def get_responses(batches, model_type):
 
     start_time = time.time()
     transformers.logging.set_verbosity_error()
+    model_pipeline = ['llama-7b', 'alpaca-7b', 'falcon-7b']
+    model_decode = ['flan-ul2', 'flan-t5-xl', 'flan-t5-xxl']
 
     accelerator = Accelerator()
     device = accelerator.device
@@ -43,25 +45,29 @@ def get_responses(batches, model_type):
     elif model_type == "flan-ul2":
         model = transformers.T5ForConditionalGeneration.from_pretrained("google/flan-ul2", torch_dtype=torch.bfloat16, cache_dir="/mnt/disk-1/flan-ul2")         
         tokenizer = transformers.AutoTokenizer.from_pretrained("google/flan-ul2")
-    elif model_type == "flan-xxl":
-        model = transformers.T5ForConditionalGeneration.from_pretrained("google/flan-xxl", torch_dtype=torch.bfloat16, cache_dir="/mnt/disk-1/flan-xxl")         
-        tokenizer = transformers.AutoTokenizer.from_pretrained("google/flan-xxl")
+    elif model_type == "flan-t5-xl":
+        model = transformers.T5ForConditionalGeneration.from_pretrained("google/flan-t5-xl", torch_dtype=torch.bfloat16, cache_dir="/mnt/disk-1/flan-t5-xl")         
+        tokenizer = transformers.AutoTokenizer.from_pretrained("google/flan-t5-xl")
+    elif model_type == "flan-t5-xxl":
+        model = transformers.T5ForConditionalGeneration.from_pretrained("google/flan-t5-xxl", torch_dtype=torch.bfloat16, cache_dir="/mnt/disk-1/flan-t5-xxl")         
+        tokenizer = transformers.AutoTokenizer.from_pretrained("google/flan-t5-xxl")
     elif model_type == "falcon-7b":
         model = transformers.AutoModelForCausalLM.from_pretrained("tiiuae/falcon-7b", torch_dtype=torch.bfloat16, cache_dir="/mnt/disk-1/falcon-7b", trust_remote_code=True)
         tokenizer = transformers.AutoTokenizer.from_pretrained("tiiuae/falcon-7b")  
         
     model, tokenizer = accelerator.prepare(model, tokenizer)
     
-    if model_type == "llama-7b" or model_type == "alpaca-7b" or model_type == "falcon-7b":
+    if model_type in model_pipeline:
         # pipeline for text generate
         pipe = pipeline('text-generation', model=model, tokenizer=tokenizer, device=device)
         # handle responses
         responses = pipe(batches, max_new_tokens=20, do_sample=False)
         responses = [r[0]['generated_text'] for r in responses]
         responses = [','.join(r.split('\n')[1::]) for r in responses]
-    elif model_type == "flan-ul2" or model_type == "flan-xxl":
+    elif model_type in model_decode:
         # prepare and tokenize inputs
-        max_length = max([len(prompt.split()) for prompt in batches])
+        # max_length = max([len(prompt.split()) for prompt in batches])
+        max_length = 256
         inputs = tokenizer(batches, return_tensors="pt", padding=True, truncation=True, max_length=max_length)
         inputs = {k: v.to(device) for k, v in inputs.items()}
         # generate response
@@ -71,53 +77,6 @@ def get_responses(batches, model_type):
 
     prompt_and_response = list(zip(batches, responses))
  
-    print('Time taken to generate responses is {}s'.format(time.time()-start_time))
-    return prompt_and_response
-
-# interactions with transformer
-def get_transformer_responses(batches, model_type, model_name, batch_size):
-    
-    responses = []
-    prompt_and_response = [] 
-    batches = np.array(list(itertools.chain(*batches)))
-    start_time = time.time()
-    
-    # for gpu computing
-    accelerator = Accelerator()
-    device = accelerator.device
-    tokenizer = accelerator.prepare(
-        T5Tokenizer.from_pretrained(model_name)
-    )
-    
-    # prepare the dataset
-    prompt_list = batches.tolist()
-    max_length = max([len(prompt.split()) for prompt in prompt_list])
-    prompt_dict = {'prompt':prompt_list}
-    
-    ds = Dataset.from_dict(prompt_dict)
-    ds = ds.map(lambda examples: T5Tokenizer.from_pretrained(model_name)(examples['prompt'], max_length=max_length, truncation=True, padding='max_length'), batched=True)
-    ds.set_format(type='torch', columns=['input_ids', 'attention_mask'])
-    dataloader = torch.utils.data.DataLoader(ds, batch_size=batch_size)
-    
-    flan_model = T5ForConditionalGeneration.from_pretrained(model_name, torch_dtype=torch.bfloat16,  cache_dir="./models")
-    flan_model = flan_model.to(device)
-    
-    # get the responses
-    preds = []
-    for batch in dataloader:
-        input_ids = batch['input_ids'].to(device)
-        attention_mask = batch['attention_mask'].to(device)
-        # print(f"input: {input_ids}")
-        # print(f"attention_mask: {attention_mask}")
-        outputs = flan_model.generate(input_ids, attention_mask=attention_mask, renormalize_logits = True)
-        preds.extend(outputs)
-    
-    responses = tokenizer.batch_decode(preds, skip_special_tokens=True)
-    del flan_model
-    # return the results
-    for prompt, response in zip(batches, responses):
-        prompt_and_response.append([prompt, response])
-        
     print('Time taken to generate responses is {}s'.format(time.time()-start_time))
     return prompt_and_response
     
@@ -153,3 +112,50 @@ def get_gpt_responses(batches, model_name, openai_key, temperature, max_tokens):
     Parallel(n_jobs = 10, require='sharedmem')(delayed(send_prompt)(batch, prompt_and_response, max_tokens) for batch in batches)
     print('Time taken to generate responses is {}s'.format(time.time() - start_time))
     return prompt_and_response
+
+# # interactions with transformer
+# def get_transformer_responses(batches, model_type, model_name, batch_size):
+    
+#     responses = []
+#     prompt_and_response = [] 
+#     batches = np.array(list(itertools.chain(*batches)))
+#     start_time = time.time()
+    
+#     # for gpu computing
+#     accelerator = Accelerator()
+#     device = accelerator.device
+#     tokenizer = accelerator.prepare(
+#         T5Tokenizer.from_pretrained(model_name)
+#     )
+    
+#     # prepare the dataset
+#     prompt_list = batches.tolist()
+#     max_length = max([len(prompt.split()) for prompt in prompt_list])
+#     prompt_dict = {'prompt':prompt_list}
+    
+#     ds = Dataset.from_dict(prompt_dict)
+#     ds = ds.map(lambda examples: T5Tokenizer.from_pretrained(model_name)(examples['prompt'], max_length=max_length, truncation=True, padding='max_length'), batched=True)
+#     ds.set_format(type='torch', columns=['input_ids', 'attention_mask'])
+#     dataloader = torch.utils.data.DataLoader(ds, batch_size=batch_size)
+    
+#     flan_model = T5ForConditionalGeneration.from_pretrained(model_name, torch_dtype=torch.bfloat16,  cache_dir="./models")
+#     flan_model = flan_model.to(device)
+    
+#     # get the responses
+#     preds = []
+#     for batch in dataloader:
+#         input_ids = batch['input_ids'].to(device)
+#         attention_mask = batch['attention_mask'].to(device)
+#         # print(f"input: {input_ids}")
+#         # print(f"attention_mask: {attention_mask}")
+#         outputs = flan_model.generate(input_ids, attention_mask=attention_mask, renormalize_logits = True)
+#         preds.extend(outputs)
+    
+#     responses = tokenizer.batch_decode(preds, skip_special_tokens=True)
+#     del flan_model
+#     # return the results
+#     for prompt, response in zip(batches, responses):
+#         prompt_and_response.append([prompt, response])
+        
+#     print('Time taken to generate responses is {}s'.format(time.time()-start_time))
+#     return prompt_and_response

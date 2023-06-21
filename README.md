@@ -33,11 +33,11 @@ pip install numpy --pre torch torchvision torchaudio --force-reinstall --index-u
 #### Example Run:
 
 ```sh
-python main.py --exp_name 'q_and_a' --model_type 'flan' --model_name 'google/flan-t5-xl' --input './examples/q_and_a/prompt.csv' --output './examples/q_and_a/response.csv' --batch_size 256
+python main.py --exp_name 'q_and_a' --model_type 'flan' --model_name 'google/flan-t5-xl' --input './experiments/q_and_a/prompt.csv' --output './experiments/q_and_a/response.csv' --batch_size 256
 ```
 
 ```sh
-python main.py --exp_name 'q_and_a' --model_type 'gpt' --model_name 'text-davinci-003' --input './examples/q_and_a/prompt.csv' --output './examples/q_and_a/response.csv' --batch_size 256
+python main.py --exp_name 'q_and_a' --model_type 'gpt' --model_name 'text-davinci-003' --input './experiments/q_and_a/prompt.csv' --output './experiments/q_and_a/response.csv' --batch_size 256
 ```
 
 If you want to run a bigger model like 'google/flan-t5-xxl', and if you want to run it on multiple gpus because of Out of memory error, you can run the above command by replacing 'python' with 'accelerate launch'. Before running the script, make sure to set the accelerate config file by running 'accelerate config'.  
