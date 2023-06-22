@@ -12,23 +12,21 @@ import numpy as np
 from src.model_interaction import *
 from src.prompt_generation import *
 
-def save_responses(reponses, file_path):
+def save_responses(reponses, file_path, mode):
     """the helper function for saving the responses"""
-    
-    with open(file_path, 'w') as f:
+    # mode: 'w', 'a'
+    with open(file_path, mode) as f:
         # using csv.writer method from CSV package
         write = csv.writer(f)
         write.writerows(reponses)
     
 def run_exp(exp_name,  
             model_type,
-            model_name, 
             input_path,
             output_path, 
             batch_size=256, 
             max_tokens=256,
-            openai_api_key=None,
-            temprature=0,
+            temperature=0,
             CoT=False
             ):
     """the helper function for running the experiment"""
@@ -52,21 +50,8 @@ def run_exp(exp_name,
     # print out info about this run
     print('Running experiment {} on data {} using {} model. Please wait for it to finish'.format(exp_name, input_path, model_type))
     
-    model_list = ['flan-t5-xl', 'flan-t5-xxl', 'flan-ul2', 'llama-7b', 'alpaca-7b', 'falcon-7b']
-    responses = []
-    # get and save the responses
-    # if model_type == : # or model_type == 'flan-t5-xxl':
-    #     responses = get_transformer_responses(batches, model_type, model_name, batch_size)
-    if model_type == 'gpt':
-        openai_key = Path(f"api_key").read_text()
-        responses = get_gpt_responses(batches, model_name, openai_key, temprature, max_tokens)
-    elif model_type in model_list:
-        responses = get_responses(batches, model_type)
-    else:
-        print("Please select from following models: 'flan-t5-xxl, flan-t5-xl, flan-ul2, llama-7b, alpaca-7b, falcon-7b, and gpt families")
-        exit()
-    
-    
+    responses = get_responses(batches, model_type, temperature, output_path)
+        
     # pipeline specific for the Feature and Concept experiment
     if exp_name == "feature_and_concept":
         with open( output_path, 'w') as output_file:
@@ -76,9 +61,8 @@ def run_exp(exp_name,
                     concept = concept.strip("\n")
                     for _, prompt in responses:
                         output_file.write(prompt.replace("[placeholder]", concept) + "\n")
-    else:
-        save_responses(responses, output_path)
-    return 
+    # else:
+    #     save_responses(responses, output_path, 'w')
 
 def main():
     """the main method, handling command line arguments"""
@@ -93,10 +77,6 @@ def main():
                         default=None,
                         type=str, 
                         help="""Please select from following models: 'flan-t5-xxl, flan-t5-xl, flan-ul2, llama-7b, alpaca-7b, falcon-7b, and gpt families""")
-    parser.add_argument('--model_name', 
-                        default=None,
-                        type=str, 
-                        help = """the specific model name you are using""")
     parser.add_argument('--input', 
                         default=[], 
                         nargs='*',
@@ -109,10 +89,10 @@ def main():
                         type=int, 
                         default=256, 
                         help="""The batch size of data that is fed to the LLM""")
-    parser.add_argument('--temprature', 
+    parser.add_argument('--temperature', 
                         type=float, 
                         default=0, 
-                        help="""Temprature for LLMs""")
+                        help="""Temperature for LLMs""")
     parser.add_argument('--cot', 
                         type=bool, 
                         default=False, 
@@ -122,7 +102,6 @@ def main():
     # check if arguments was provided
     assert args.exp_name != None
     assert args.model_type != None
-    if args.model_type == 'gpt': assert args.model_name != None
     assert len(args.input) != 0
     assert args.output != None
     
@@ -138,15 +117,12 @@ def main():
     # call the helper function to do the actual work
     run_exp(exp_name = args.exp_name,  
             model_type = args.model_type, 
-            model_name = args.model_name,
             input_path = args.input,
             output_path = args.output, 
             batch_size = args.batch_size,
             max_tokens = 256,
-            openai_api_key = None, 
-            temprature = args.temprature,
-            CoT = args.cot,
-           )        
+            temperature = args.temperature,
+            CoT = args.cot,)        
 
 if __name__=="__main__":
     main()

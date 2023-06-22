@@ -1,25 +1,9 @@
- #################################################################################
- # The code is originally written by Siddharth Suresh (siddharth.suresh@wisc.edu)#
- # Repurposed and modified by Alex Huang (whuang288@wisc.edu)                    #
- #################################################################################
+ # Authors: Siddharth Suresh <siddharth.suresh@wisc.edu>
+ #          Alex Huang <whuang288@wisc.edu>
+ #          Xizheng Yu <xyu354@wisc.edu>
  
 import numpy as np
-import torch
-import itertools
-import warnings
 import logging
-import openai
-import time
-from datasets import Dataset
-from transformers import pipeline
-from transformers.pipelines.pt_utils import KeyDataset
-from tqdm import tqdm
-import os
-from pattern.en import pluralize
-from joblib import Parallel, delayed
-from transformers import T5Tokenizer, T5ForConditionalGeneration
-import pickle5 as pickle
-import inflect
 
 ERROR = 3
 ESTIMATED_RESPONSE_TOKENS = 8 + ERROR
@@ -45,7 +29,7 @@ def generate_prompt(exp, input, CoT):
         pass
     
     if CoT == True:
-        prompt = prompt + " Let's think step by step."
+        prompt = prompt + " End your answer with, 'The answer is '. Let's think step by step. "
     
     characters = len(prompt)
 

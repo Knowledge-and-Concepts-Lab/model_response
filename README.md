@@ -65,7 +65,7 @@ If you want to run a bigger model like 'google/flan-t5-xxl', and if you want to 
 
 ## Setting up the API key 
 
-To use the gpt model, please create a file called "api_key.txt" under the main directory, and paste your openai API key in it. Please refer to this <a href = "https://www.educative.io/courses/open-ai-api-natural-language-processing-python/7DxorX8xA0O"> website </a> for more information. Note that depending on your subscription plan, your rate limit will be different and the time it takes to get all your responses may varies according to it.
+To use the gpt model, please create a file called "API_AZURE_OPENAI_KEY" and API_OPENAI_KEY" under the main directory, and paste your openai API key in it. Please refer to this <a href = "https://www.educative.io/courses/open-ai-api-natural-language-processing-python/7DxorX8xA0O"> website </a> for more information. Note that depending on your subscription plan, your rate limit will be different and the time it takes to get all your responses may varies according to it.
 
 ## Prompt Engineering
 

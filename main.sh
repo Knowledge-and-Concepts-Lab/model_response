@@ -31,7 +31,7 @@
 #         --input './experiments/pairwise/prompt.csv' \
 #         --output "./experiments/pairwise/exp_20_temp_0.7/response_davinci-003_${i}.csv" \
 #         --batch_size 256 \
-#         --temprature 0.7
+#         --temperature 0.7
 # done
 
 # GPT-3 expriments
@@ -72,16 +72,36 @@
 #     --output './experiments/cot/flan-t5-xxl_cot_triplet_small.csv' \
 #     --cot True
 
-for i in $(seq 1 10); do
-    python main.py --exp_name 'triplet' --model_type 'flan-t5-xxl' \
-        --input './experiments/triplet/prompt.csv' \
-        --output "./experiments/cot/flan-t5-xxl_cot_triplet_${i}.csv" \
-        --cot True
-done
+# python main.py --exp_name 'triplet' --model_type 'gpt-semantics' \
+#     --input './experiments/triplet/prompt.csv' \
+#     --output './experiments/cot/gpt-semantics_cot_triplet.csv' \
+#     --cot True
 
-for i in $(seq 1 10); do
-    python main.py --exp_name 'pairwise' --model_type 'flan-t5-xxl' \
-        --input './experiments/pairwise/prompt.csv' \
-        --output "./experiments/cot/flan-t5-xxl_cot_pairwise_${i}.csv" \
-        --cot True
-done
+# python main.py --exp_name 'triplet' --model_type 'text-davinci-003' \
+#     --input './experiments/triplet/prompt.csv' \
+#     --output './experiments/cot/text-davinci-003_cot_triplet.csv' \
+#     --cot True
+
+# python main.py --exp_name 'pairwise' --model_type 'gpt-semantics' \
+#     --input './experiments/pairwise/prompt.csv' \
+#     --output './experiments/cot/gpt-semantics_cot_pairwise.csv' \
+#     --cot True
+
+# python main.py --exp_name 'pairwise' --model_type 'text-davinci-003' \
+#     --input './experiments/pairwise/prompt.csv' \
+#     --output './experiments/cot/text-davinci-003_cot_pairwise.csv' \
+#     --cot True
+
+# for i in $(seq 1 1); do
+#     python main.py --exp_name 'pairwise' --model_type 'flan-t5-xxl' \
+#         --input './experiments/pairwise/prompt.csv' \
+#         --output "./experiments/cot/flan-t5-xxl_cot_pairwise_${i}.csv" \
+#         --batch_size 512 --cot True
+# done
+
+# for i in $(seq 1 10); do
+#     python main.py --exp_name 'pairwise' --model_type 'flan-t5-xxl' \
+#         --input './experiments/pairwise/prompt.csv' \
+#         --output "./experiments/cot/flan-t5-xxl_cot_pairwise_${i}.csv" \
+#         --cot True
+# done
