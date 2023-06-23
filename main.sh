@@ -92,12 +92,12 @@
 #     --output './experiments/cot/text-davinci-003_cot_pairwise.csv' \
 #     --cot True
 
-# for i in $(seq 1 1); do
-#     python main.py --exp_name 'pairwise' --model_type 'flan-t5-xxl' \
-#         --input './experiments/pairwise/prompt.csv' \
-#         --output "./experiments/cot/flan-t5-xxl_cot_pairwise_${i}.csv" \
-#         --batch_size 512 --cot True
-# done
+for i in $(seq 2 3); do
+    python main.py --exp_name 'triplet' --model_type 'flan-t5-xxl' \
+        --input './experiments/triplet/prompt.csv' \
+        --output "./experiments/cot/flan-t5-xxl_cot_triplet_${i}.csv" \
+        --batch_size 256 --cot True
+done
 
 # for i in $(seq 1 10); do
 #     python main.py --exp_name 'pairwise' --model_type 'flan-t5-xxl' \

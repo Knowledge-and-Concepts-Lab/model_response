@@ -50,7 +50,7 @@ def run_exp(exp_name,
     # print out info about this run
     print('Running experiment {} on data {} using {} model. Please wait for it to finish'.format(exp_name, input_path, model_type))
     
-    responses = get_responses(batches, model_type, temperature, output_path)
+    responses = get_responses(batches, model_type, temperature, output_path, batch_size)
         
     # pipeline specific for the Feature and Concept experiment
     if exp_name == "feature_and_concept":
