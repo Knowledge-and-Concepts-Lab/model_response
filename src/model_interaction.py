@@ -20,13 +20,14 @@ from pathlib import Path
 from joblib import Parallel, delayed
 
 import torch
-import openai
+from openai import OpenAI
 import transformers
 from accelerate import Accelerator
 
+client = OpenAI(api_key = Path(f"API_OPENAI_KEY").read_text())
 model_pipeline = ['llama-7b', 'alpaca-7b', 'falcon-7b']
 model_decode = ['flan-ul2', 'flan-t5-xl', 'flan-t5-xxl']
-gpts = ['text-davinci-002', 'gpt-semantics', 'text-davinci-003', 'gpt-35-turbo', 'gpt-3.5-turbo-0613']
+gpts = ['text-davinci-002', 'gpt-semantics', 'text-davinci-003', 'gpt-35-turbo', 'gpt-3.5-turbo-0613', 'gpt-4', 'gpt-4-1106-preview']
 model_list = model_pipeline + model_decode + gpts
 
 def timer(start_time):
@@ -49,8 +50,8 @@ def send_gpt_prompt(batch, model_type, prompt_and_response, temperature, max_tok
         completion = None
         while not succeed:
             try:
-                if 'turbo' in model_type:
-                    completion = openai.ChatCompletion.create(
+                if model_type in ['gpt-35-turbo', 'gpt-3.5-turbo-0613', 'gpt-4', 'gpt-4-1106-preview']:
+                    completion = client.chat.completions.create(
                     model=model_type,
                     messages=[
                         {
@@ -58,14 +59,14 @@ def send_gpt_prompt(batch, model_type, prompt_and_response, temperature, max_tok
                         "content": prompt
                         }
                     ],
-                    temperature=1,
+                    temperature=temperature,
                     max_tokens=4000,
                     top_p=1,
                     frequency_penalty=0,
                     presence_penalty=0
                     )
                 else:
-                    completion = openai.Completion.create(
+                    completion = client.chat.completions.create(
                     engine = model_type,
                     prompt = prompt,
                     max_tokens = max_tokens,
@@ -74,11 +75,12 @@ def send_gpt_prompt(batch, model_type, prompt_and_response, temperature, max_tok
                     )
                 succeed = True
             except Exception as e:
+                print(e)
                 print("GPT sleeping...")
                 sleep(60)
         assert completion is not None
-        if 'turbo' in model_type:
-            response = completion['choices'][0]['message']['content']
+        if model_type in ['gpt-35-turbo', 'gpt-3.5-turbo-0613', 'gpt-4', 'gpt-4-1106-preview']:
+            response = completion.choices[0].message.content
         else:
             response = completion['choices'][0]['text'].replace('\n', ' ').replace(' .', '.').strip()
         prompt_and_response.append([prompt, response, response.split(" ")[-1][:-1]])
@@ -90,7 +92,7 @@ def generate_responses_gpt(batches, model_type, output_path, temperature, max_to
     # openai.api_base = Path(f"AZURE_OPENAI_ENDPOINT").read_text()
     # openai.api_type = 'azure'
     # openai.api_version = '2023-05-15'
-    openai.api_key = Path(f"API_OPENAI_KEY").read_text()
+    # client.api_key = Path(f"API_OPENAI_KEY").read_text()
         
     prompt_and_response = []
     

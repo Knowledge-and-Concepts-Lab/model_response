@@ -26,7 +26,7 @@ def run_exp(exp_name,
             output_path, 
             batch_size=256, 
             max_tokens=256,
-            temperature=0,
+            temperature=1,
             CoT=False
             ):
     """the helper function for running the experiment"""
